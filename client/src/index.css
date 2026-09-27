@@ -1,0 +1,1684 @@
+/* stylelint-disable at-rule-no-unknown -- Tailwind CSS directives & @apply are handled by Tailwind's PostCSS plugin */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Professional Base Styles */
+@layer base {
+  :root {
+    --border-color: #e5e7eb;
+    --hover-bg: #f9fafb;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+  }
+}
+
+@layer components {
+  /* Professional Cards */
+  .card-modern {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200;
+  }
+  
+  /* Professional Buttons */
+  .btn-modern {
+    @apply px-4 py-2 rounded-md font-medium shadow-sm hover:shadow transition-all duration-200;
+  }
+  
+  .btn-primary {
+    @apply btn-modern bg-slate-700 text-white hover:bg-slate-800 focus:ring-2 focus:ring-slate-500 focus:ring-offset-2;
+  }
+  
+  .btn-secondary {
+    @apply btn-modern bg-white text-gray-700 border border-gray-300 hover:bg-gray-50;
+  }
+  
+  .btn-accent {
+    @apply btn-modern bg-accent-blue text-white hover:bg-blue-600;
+  }
+  
+  /* Professional Status Badges */
+  .status-badge {
+    @apply px-2 py-1 text-xs font-medium rounded;
+  }
+  
+  .status-new {
+    @apply bg-blue-100 text-blue-700 border border-blue-200;
+  }
+  
+  .status-booked {
+    @apply bg-green-100 text-green-700 border border-green-200;
+  }
+  
+  .status-attended {
+    @apply bg-purple-100 text-purple-700 border border-purple-200;
+  }
+  
+  .status-cancelled {
+    @apply bg-red-100 text-red-700 border border-red-200;
+  }
+  
+  .status-assigned {
+    @apply bg-amber-100 text-amber-700 border border-amber-200;
+  }
+  
+  .status-contacted {
+    @apply bg-blue-100 text-blue-700 border border-blue-200;
+  }
+  
+  .status-confirmed {
+    @apply bg-indigo-100 text-indigo-700 border border-indigo-200;
+  }
+  
+  .status-no-answer {
+    @apply bg-yellow-100 text-yellow-700 border border-yellow-200;
+  }
+  
+  .status-not-interested {
+    @apply bg-red-100 text-red-700 border border-red-200;
+  }
+  
+  .status-sale {
+    @apply bg-green-100 text-green-700 border border-green-200;
+  }
+  
+  .status-rejected {
+    @apply bg-red-100 text-red-700 border border-red-200;
+  }
+  
+  .status-call-back {
+    @apply bg-purple-100 text-purple-700 border border-purple-200;
+  }
+  
+  .status-left-message {
+    @apply bg-yellow-100 text-yellow-700 border border-yellow-200;
+  }
+  
+  .status-not-qualified {
+    @apply bg-red-100 text-red-700 border border-red-200;
+  }
+  
+  .status-reschedule {
+    @apply bg-orange-100 text-orange-700 border border-orange-200;
+  }
+  
+  .status-no-show {
+    @apply bg-amber-100 text-amber-700 border border-amber-200;
+  }
+  
+  .status-wrong-number {
+    @apply bg-teal-100 text-teal-700 border border-teal-200;
+  }
+  
+  /* Professional Cards */
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200;
+  }
+  
+  /* Professional Table Styles */
+  .table-modern {
+    @apply w-full overflow-hidden rounded-lg border border-gray-200;
+  }
+  
+  .table-row {
+    @apply border-b border-gray-200 hover:bg-gray-50 transition-colors duration-150;
+  }
+  
+  .table-header {
+    @apply bg-gray-50 text-gray-600 text-xs font-semibold uppercase tracking-wider;
+  }
+  
+  /* Professional Input Fields */
+  .input-modern {
+    @apply w-full px-3 py-2 rounded-md bg-white border border-gray-300 focus:border-slate-500 focus:ring-1 focus:ring-slate-500 transition-all duration-200;
+  }
+  
+  .select-modern {
+    @apply input-modern cursor-pointer;
+  }
+  
+  /* Sidebar Navigation */
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 hover:text-slate-900 transition-all duration-150;
+  }
+  
+  .nav-item-active {
+    @apply nav-item bg-slate-100 text-slate-900 font-semibold;
+  }
+  
+  /* Calendar Specific */
+  .calendar-event {
+    @apply rounded-lg px-2 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm border-l-4 hover:shadow-lg transition-all duration-200;
+  }
+  
+  /* Animations */
+  .pulse-glow {
+    @apply animate-pulse;
+  }
+  
+  .float-animation {
+    @apply animate-bounce;
+  }
+}
+
+/* Professional Calendar Styles */
+.fc {
+  @apply font-sans;
+}
+
+.fc-theme-standard .fc-scrollgrid {
+  @apply border border-gray-300 rounded-lg overflow-hidden shadow-sm bg-white;
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th {
+  @apply border-gray-300;
+}
+
+.fc-col-header-cell {
+  @apply bg-gray-50 border-b-2 border-gray-300;
+}
+
+.fc-col-header-cell-cushion {
+  @apply text-xs font-bold text-gray-700 uppercase tracking-wider py-3;
+}
+
+.fc-daygrid-day {
+  @apply bg-white hover:bg-gray-50 transition-colors duration-150 border border-gray-200;
+  min-height: 90px !important; /* Fit screen better while keeping space for events */
+}
+
+.fc-daygrid-day-number {
+  @apply text-gray-800 font-semibold text-sm;
+}
+
+.fc-daygrid-day.fc-day-today {
+  @apply bg-slate-50 border-2 border-slate-400;
+}
+
+.fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  @apply text-slate-900 font-bold;
+}
+
+.fc-event {
+  @apply border-0 rounded px-1 shadow-sm hover:shadow-md transition-all duration-150 cursor-pointer text-xs font-medium;
+}
+
+/* Make time grid events LARGE and SUPER READABLE - optimized for no-scroll view */
+.fc-timegrid-event {
+  /* Let FullCalendar handle positioning, we just style */
+  display: flex !important;
+  align-items: center !important;
+  padding: 10px 14px !important; /* Optimized padding for readability without wasted space */
+  font-size: 1.05rem !important; /* Large, clear text that's easy to read */
+  font-weight: 700 !important; /* Bold for maximum readability */
+  line-height: 1.3 !important; /* Tight line height for compact look */
+  overflow: hidden !important; /* Prevent text overflow */
+  border-radius: 6px !important;
+  margin: 2px !important; /* Clear gap from slot edges */
+  box-sizing: border-box !important;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15) !important; /* Strong shadow for depth */
+  min-height: 50px !important; /* Large enough to be super readable */
+}
+/* GLOBAL: Optimize time slots to fit screen without scrolling */
+.fc .fc-timegrid-slot {
+  height: 55px !important; /* Perfect balance - fits 8 hours on screen without scrolling */
+  border-bottom: 1px solid #e5e7eb !important; /* Clear slot boundaries */
+}
+
+/* Make time labels LARGE and EASY TO READ */
+.fc .fc-timegrid-slot-label {
+  font-size: 1.1rem !important; /* Large time labels */
+  font-weight: 700 !important; /* Bold for clarity */
+  padding: 8px !important;
+  color: #374151 !important; /* Dark gray for readability */
+}
+
+.fc-timegrid-event .fc-event-main {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding: 0 !important;
+}
+
+.fc-timegrid-event .fc-event-main-frame {
+  display: flex !important;
+  align-items: center !important;
+  flex-direction: row !important;
+  width: 100% !important;
+}
+
+.fc-timegrid-event .fc-event-time {
+  font-weight: 800 !important; /* Extra bold for time */
+  font-size: 1.05rem !important; /* Large, easy-to-read time */
+  margin-right: 8px !important;
+  letter-spacing: 0.3px !important; /* Slight spacing for clarity */
+}
+
+.fc-timegrid-event .fc-event-title {
+  font-size: 1.05rem !important; /* Large, easy-to-read title */
+  font-weight: 700 !important; /* Bold for readability */
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  letter-spacing: 0.2px !important; /* Slight spacing for clarity */
+}
+
+.fc-daygrid-event {
+  @apply px-3 py-2 my-1;
+  min-height: 28px !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+.fc-event-title {
+  @apply font-semibold text-white;
+}
+
+.fc-daygrid-day-events {
+  @apply space-y-1;
+  margin: 8px 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+/* Ensure individual events don't overlap */
+.fc-daygrid-event-harness {
+  margin-bottom: 4px !important;
+}
+
+/* Make sure day cells can accommodate multiple events */
+.fc-daygrid-day-frame {
+  min-height: 90px !important;
+  padding: 4px !important;
+}
+
+.fc-button {
+  @apply bg-slate-700 text-white border-0 rounded-md px-3 py-1.5 font-medium shadow-sm hover:bg-slate-800 transition-all duration-150;
+}
+
+.fc-button:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.fc-button-active {
+  @apply bg-slate-900 shadow-inner;
+}
+
+.fc-toolbar-title {
+  @apply text-xl font-bold text-slate-900;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-400 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-500;
+}
+
+/* Calendar Modal Scrollbar - Pinky Red & Prominent */
+.calendar-modal-scroll::-webkit-scrollbar {
+  width: 12px;
+}
+
+.calendar-modal-scroll::-webkit-scrollbar-track {
+  background: #fce7f3;
+  border-radius: 10px;
+}
+
+.calendar-modal-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ec4899 0%, #db2777 100%);
+  border-radius: 10px;
+  border: 2px solid #fce7f3;
+  box-shadow: 0 2px 4px rgba(236, 72, 153, 0.3);
+}
+
+.calendar-modal-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #db2777 0%, #be185d 100%);
+  box-shadow: 0 4px 8px rgba(236, 72, 153, 0.5);
+  cursor: pointer;
+}
+
+.calendar-modal-scroll::-webkit-scrollbar-thumb:active {
+  background: #be185d;
+}
+
+/* Loading Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  @apply bg-gradient-to-r from-transparent via-white/20 to-transparent bg-[length:200%_100%] animate-[shimmer_1.5s_ease-in-out_infinite];
+}
+
+/* Mobile Responsive Utilities */
+@layer utilities {
+  /* Touch-friendly sizes */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Mobile text sizing */
+  .text-mobile-xs {
+    @apply text-xs sm:text-sm;
+  }
+
+  .text-mobile-sm {
+    @apply text-sm sm:text-base;
+  }
+
+  .text-mobile-base {
+    @apply text-base sm:text-lg;
+  }
+
+  .text-mobile-lg {
+    @apply text-lg sm:text-xl;
+  }
+
+  .text-mobile-xl {
+    @apply text-xl sm:text-2xl;
+  }
+
+  /* Mobile padding */
+  .mobile-padding {
+    @apply px-3 py-2 sm:px-4 sm:py-3;
+  }
+
+  /* Mobile card */
+  .mobile-card {
+    @apply p-3 sm:p-4 md:p-6;
+  }
+
+  /* Hide on mobile */
+  .hide-mobile {
+    @apply hidden sm:block;
+  }
+
+  /* Show only on mobile */
+  .show-mobile {
+    @apply block sm:hidden;
+  }
+
+  /* Mobile grid */
+  .mobile-grid {
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  /* Mobile spacing */
+  .mobile-gap {
+    @apply gap-3 sm:gap-4 md:gap-6;
+  }
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 640px) {
+  /* Ensure tables are scrollable on mobile */
+  .table-modern {
+    @apply overflow-x-auto;
+  }
+
+  /* Smaller button text on mobile */
+  .btn-modern {
+    @apply text-sm px-3 py-1.5;
+  }
+
+  /* Compact cards on mobile */
+  .card {
+    @apply p-4;
+  }
+
+  /* Smaller calendar text */
+  .fc-toolbar-title {
+    @apply text-base;
+  }
+
+  .fc-button {
+    @apply px-2 py-1 text-xs;
+  }
+
+  /* Smaller status badges */
+  .status-badge {
+    @apply text-xs px-1.5 py-0.5;
+  }
+
+  /* Compact input fields */
+  .input-modern, .select-modern {
+    @apply text-sm px-2 py-1.5;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .fc-toolbar-title {
+    @apply text-lg;
+  }
+}
+
+/* FullCalendar Mobile Responsive Styles */
+@media (max-width: 640px) {
+  /* Toolbar */
+  .fc .fc-toolbar {
+    /* stylelint-disable-next-line at-rule-no-unknown -- Tailwind @apply handled by PostCSS */
+    @apply flex-col gap-2;
+  }
+
+  .fc .fc-toolbar-chunk {
+    @apply w-full flex justify-center;
+  }
+
+  .fc .fc-toolbar-title {
+    @apply text-sm font-bold;
+  }
+
+  /* Buttons - make them smaller and touch-friendly */
+  .fc .fc-button {
+    @apply px-2 py-1 text-xs;
+    min-height: 36px;
+    min-width: 36px;
+  }
+
+  .fc .fc-button-group {
+    @apply flex gap-1;
+  }
+
+  /* Hide view switcher on very small screens */
+  .fc .fc-toolbar-chunk:last-child {
+    @apply hidden;
+  }
+
+  /* Day headers */
+  .fc .fc-col-header-cell-cushion {
+    @apply text-xs py-2;
+  }
+
+  /* Day numbers */
+  .fc .fc-daygrid-day-number {
+    @apply text-xs p-1;
+  }
+
+  /* Events - keep them large and readable on mobile */
+  .fc .fc-daygrid-event {
+    min-height: 24px !important;
+    font-size: 0.75rem !important;
+    padding: 4px 8px !important;
+    margin: 2px 0 !important;
+    font-weight: 600 !important;
+  }
+
+  .fc .fc-event-title {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+  }
+
+  /* Week/Day view times - LARGE for easy viewing on mobile */
+  .fc .fc-timegrid-slot-label {
+    font-size: 1rem !important; /* Large time labels on mobile */
+    font-weight: 700 !important;
+    padding: 8px !important;
+  }
+
+  .fc .fc-timegrid-event {
+    min-height: 45px !important; /* Keep large on mobile */
+    font-size: 0.95rem !important; /* Readable on mobile */
+    padding: 8px 10px !important;
+    font-weight: 700 !important; /* Bold for readability */
+  }
+
+  /* Mobile time slots optimized for no-scroll */
+  .fc .fc-timegrid-slot {
+    height: 50px !important; /* Slightly smaller on mobile but still fits without scroll */
+  }
+  
+  /* Make slot lines more visible */
+  .fc .fc-timegrid-slot-lane {
+    border-bottom: 1px solid #e5e7eb !important;
+  }
+  
+  /* Ensure time grid lines are visible */
+  .fc-timegrid-divider {
+    border: 1px solid #e5e7eb !important;
+  }
+
+  /* Keep cells balanced for events on mobile */
+  .fc .fc-daygrid-day-frame {
+    min-height: 80px !important;
+    padding: 4px !important;
+  }
+
+  /* More events link */
+  .fc .fc-daygrid-more-link {
+    @apply text-xs;
+  }
+}
+
+/* Tablet calendar adjustments */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .fc .fc-toolbar-title {
+    @apply text-base;
+  }
+
+  .fc .fc-button {
+    @apply px-3 py-1.5 text-sm;
+  }
+
+  .fc .fc-daygrid-event {
+    @apply text-sm;
+  }
+}
+
+/* Always make calendar responsive and fit screen without vertical scroll */
+.fc {
+  @apply w-full overflow-x-auto;
+}
+
+.fc-view-harness {
+  @apply overflow-x-auto;
+  overflow-y: visible !important; /* No vertical scroll - all slots visible */
+}
+
+/* Ensure time grid view fits without scrolling */
+.fc-timegrid {
+  overflow-y: visible !important; /* Show all time slots without scrolling */
+}
+
+.fc-scroller {
+  overflow-y: visible !important; /* Remove scroll on time grid */
+  overflow-x: auto !important; /* Keep horizontal scroll for responsiveness */
+}
+
+/* Mobile-friendly modal styles - only for modals using these classes */
+.modal-overlay:not(.custom-modal) {
+  @apply fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center;
+  @apply p-2 sm:p-4 overflow-y-auto;
+}
+
+.modal-content:not(.custom-modal) {
+  @apply bg-white rounded-lg sm:rounded-xl shadow-2xl;
+  @apply w-full max-w-4xl mx-auto my-auto;
+  @apply max-h-[95vh] overflow-y-auto;
+  @apply p-4 sm:p-6 lg:p-8;
+}
+
+@media (max-width: 640px) {
+  .modal-content:not(.custom-modal) {
+    @apply rounded-lg max-h-[98vh] p-3;
+  }
+
+  .modal-overlay:not(.custom-modal) {
+    @apply p-1;
+  }
+}
+
+/* Slot Calendar Styles */
+.slot-calendar-container {
+  @apply w-full;
+}
+
+.slot-calendar-grid {
+  @apply bg-white;
+}
+
+/* Slot Calendar Cell Hover Effects */
+.slot-calendar-grid > div > div:hover {
+  @apply opacity-90;
+}
+
+/* Mobile Responsive Slot Calendar */
+@media (max-width: 768px) {
+  .slot-calendar-grid {
+    @apply text-sm;
+  }
+  
+  .slot-calendar-grid > div {
+    @apply min-h-[60px];
+  }
+  
+  .slot-calendar-grid .p-4 {
+    @apply p-2;
+  }
+}
+
+/* Monthly Slot Calendar Styles */
+.monthly-slot-calendar-container {
+  @apply w-full;
+}
+
+.monthly-slot-calendar-container .grid {
+  @apply gap-0;
+}
+
+/* Weekly Slot Calendar Styles */
+.weekly-slot-calendar-container {
+  @apply w-full;
+}
+
+/* Compact cell styling for weekly view */
+.weekly-slot-calendar-container .compact-cell {
+  @apply transition-all duration-200 min-h-[32px];
+}
+
+.weekly-slot-calendar-container .compact-cell:hover {
+  @apply transform scale-105 shadow-sm;
+}
+
+/* Print Styles for Calendar */
+@media print {
+  .slot-calendar-container,
+  .weekly-slot-calendar-container {
+    @apply shadow-none;
+  }
+  
+  .slot-calendar-grid,
+  .weekly-slot-calendar-container > div {
+    @apply break-inside-avoid;
+  }
+  
+  /* Hide interactive elements when printing */
+  button,
+  .hover\:opacity-80 {
+    @apply pointer-events-none;
+  }
+  
+  /* Ensure colors print correctly */
+  .bg-blue-100 {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .bg-pink-100 {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .bg-yellow-100 {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* Slot Color Recommendations */
+.slot-type-male {
+  @apply bg-blue-100 border-blue-200;
+}
+
+.slot-type-female {
+  @apply bg-pink-100 border-pink-200;
+}
+
+.slot-type-family {
+  @apply bg-yellow-100 border-yellow-200;
+}
+
+.slot-type-available {
+  @apply bg-white border-gray-200;
+}
+
+/* Booking Status Colors */
+.booking-confirmed {
+  @apply bg-green-50 border-green-300;
+}
+
+.booking-unconfirmed {
+  @apply bg-orange-50 border-orange-300;
+}
+
+.booking-arrived {
+  @apply bg-red-50 border-red-300;
+}
+
+.booking-left {
+  @apply bg-gray-100 border-gray-300;
+}
+
+.booking-sale {
+  @apply bg-blue-200 border-blue-400;
+}
+
+/* ===== PERFORMANCE OPTIMIZATIONS FOR 500K+ LEADS ===== */
+
+/* react-window list optimization */
+.ReactVirtualized__List,
+.ReactVirtualized__Grid,
+[class*="FixedSizeList"] > div {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: auto !important; /* Disable smooth scroll for instant response */
+}
+
+/* GPU layer for virtual list container */
+[class*="FixedSizeList"] {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize each row - contain paint to prevent full repaints */
+[class*="FixedSizeList"] > div > div {
+  contain: layout style paint;
+  backface-visibility: hidden;
+}
+
+/* Legacy virtual scroll support */
+.virtual-scroll-container {
+  transform: translateZ(0);
+  -webkit-overflow-scrolling: touch;
+  overflow-anchor: none;
+}
+
+/* Image loading optimization */
+.lazy-image-container {
+  contain: layout style;
+  position: relative;
+}
+
+/* Placeholder animation for loading images */
+.image-placeholder {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: imagePlaceholderShimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes imagePlaceholderShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Fade-in for loaded images */
+.image-fade-in {
+  animation: imageFadeIn 0.3s ease-out;
+}
+
+@keyframes imageFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Video and GIF hover indicator */
+.media-play-indicator {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.media-play-indicator::after {
+  content: "▶";
+  color: white;
+  font-size: 1.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.media-container:hover .media-play-indicator {
+  opacity: 1;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .image-placeholder {
+    animation: none;
+    background: #f0f0f0;
+  }
+
+  .image-fade-in {
+    animation: none;
+  }
+
+  .virtual-list-item {
+    will-change: auto;
+  }
+}
+
+/* Optimize text rendering for large lists */
+.text-optimize {
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Table row performance - isolate paint to each row */
+.table-row-optimized {
+  contain: layout style paint;
+  content-visibility: auto; /* Skip rendering of off-screen rows */
+  contain-intrinsic-size: 60px; /* Approximate row height */
+}
+
+/* Thumbnail optimization */
+.thumbnail-optimized {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  contain: layout style;
+}
+
+/* Memory-efficient backgrounds */
+.bg-pattern-subtle {
+  background-image: none; /* Remove heavy patterns on lists */
+}
+
+/* Optimize transitions for many items */
+.transition-fast {
+  transition-duration: 100ms !important;
+}
+
+/* Force GPU compositing for critical elements */
+.gpu-accelerated {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* ===== REACT-VIRTUOSO OPTIMIZATIONS (Instagram-style) ===== */
+
+/* Virtuoso list container - enable hardware acceleration */
+[data-virtuoso-scroller] {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: auto !important; /* Instant scroll for 60fps */
+}
+
+/* Virtuoso item wrapper - contain paint for isolated repaints */
+[data-virtuoso-scroller] > div > div {
+  contain: layout style paint;
+  will-change: transform;
+}
+
+/* Virtuoso viewport - prevent layout thrashing */
+[data-viewport-type="element"] {
+  contain: strict;
+}
+
+/* Instagram-style shimmer placeholder animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Blur placeholder shimmer effect */
+.blur-placeholder {
+  background: linear-gradient(90deg, #e8e8e8 0%, #f5f5f5 50%, #e8e8e8 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Image blur-to-clear transition (Facebook/Instagram technique) */
+.image-blur-transition {
+  transition: filter 0.3s ease-out, opacity 0.2s ease-out;
+}
+
+.image-blur-transition.loading {
+  filter: blur(10px);
+  opacity: 0.7;
+}
+
+.image-blur-transition.loaded {
+  filter: blur(0);
+  opacity: 1;
+}
+
+/* Smooth scroll restoration for Virtuoso */
+[data-virtuoso-scroller]:focus-visible {
+  outline: none;
+}
+
+/* Optimize hover states for virtual list items */
+[data-virtuoso-scroller] [role="listitem"]:hover {
+  transition: background-color 75ms ease-out;
+}
+
+/* ========================================
+   PRESENTATION GALLERY - SLIDESHOW STYLES
+   ======================================== */
+
+/* Slideshow Image Container */
+.slideshow-image {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+  z-index: 0;
+}
+
+.slideshow-image.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.slideshow-image.previous {
+  opacity: 0;
+  z-index: 0;
+}
+
+.slideshow-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+/* Thumbnail Strip */
+.thumbnail-strip {
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+  padding: 16px 24px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+  backdrop-filter: blur(10px);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.thumbnail-strip::-webkit-scrollbar {
+  height: 6px;
+}
+
+.thumbnail-strip::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.thumbnail-strip::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.thumbnail-strip::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Individual Thumbnail */
+.thumbnail {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
+  opacity: 0.6;
+}
+
+.thumbnail:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.thumbnail.current {
+  border-color: white;
+  opacity: 1;
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.thumbnail.selected {
+  border-color: #a855f7;
+  opacity: 1;
+}
+
+.thumbnail.selected.current {
+  border-color: #a855f7;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Selection Animation */
+@keyframes selectPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.thumbnail.selected::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(168, 85, 247, 0.2);
+  z-index: 1;
+}
+
+/* Auto-play Progress Indicator */
+@keyframes autoPlayProgress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.auto-play-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #a855f7, #7c3aed);
+  animation: autoPlayProgress 4s linear infinite;
+}
+
+/* Upload Progress Bar Stripes Animation */
+@keyframes progress-stripes {
+  0% {
+    background-position: 1rem 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+/* Gallery Controls Hover Effects */
+.gallery-control {
+  transition: all 0.2s ease;
+}
+
+.gallery-control:hover {
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.gallery-control:active {
+  transform: scale(0.95);
+}
+
+
+/* ========================================
+   GMAIL EMAIL RENDERER STYLES
+   ======================================== */
+
+/* Gmail Email Renderer Container */
+.gmail-email-renderer {
+  width: 100%;
+}
+
+/* Email iframe styling */
+.gmail-email-renderer iframe {
+  width: 100%;
+  min-height: 100px;
+  border: none;
+  background: transparent;
+}
+
+/* Email content wrapper in modals */
+.email-html-wrapper {
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 8px;
+}
+
+/* Sent email styling */
+.email-sent {
+  color: white;
+}
+
+.email-sent a {
+  color: #bfdbfe !important;
+  text-decoration: underline;
+}
+
+.email-sent blockquote,
+.email-sent .gmail_quote {
+  border-left-color: rgba(255, 255, 255, 0.4) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Received email styling */
+.email-received {
+  color: #1f2937;
+}
+
+.email-received a {
+  color: #2563eb !important;
+  text-decoration: none;
+}
+
+.email-received a:hover {
+  text-decoration: underline;
+}
+
+.email-received blockquote,
+.email-received .gmail_quote {
+  border-left-color: #dadce0 !important;
+  color: #5f6368 !important;
+}
+
+/* Failed email styling */
+.email-failed {
+  color: #991b1b;
+}
+
+.email-failed a {
+  color: #dc2626 !important;
+}
+
+/* Attachments section */
+.gmail-email-renderer .attachments-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Individual attachment */
+.email-attachment {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  margin: 4px;
+  font-size: 13px;
+  color: #374151;
+  transition: background-color 0.15s ease;
+}
+
+.email-attachment:hover {
+  background: #e5e7eb;
+}
+
+.email-attachment svg {
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+/* Scrollbar styling for email content */
+.email-html-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.email-html-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.email-html-wrapper::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.email-html-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Plain text email styling */
+.gmail-email-renderer .plain-text-content {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Link styling in plain text */
+.gmail-email-renderer .plain-text-content a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.gmail-email-renderer .plain-text-content a:hover {
+  text-decoration: underline;
+}
+
+/* Email modal specific styles */
+.reply-modal-email-content {
+  max-height: 300px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+/* Dark mode support for email renderer */
+@media (prefers-color-scheme: dark) {
+  .gmail-email-renderer iframe {
+    color-scheme: light;
+  }
+}
+
+/* Mobile responsive email display */
+@media (max-width: 640px) {
+  .gmail-email-renderer iframe {
+    min-height: 80px;
+  }
+  
+  .email-html-wrapper {
+    max-height: 300px;
+  }
+  
+  .reply-modal-email-content {
+    max-height: 250px;
+    padding: 12px;
+  }
+}
+
+
+/* ========================================
+   RESPONSIVE IMPROVEMENTS - 2024
+   ======================================== */
+
+/* Sidebar Arrow Attention Animation - Premium Feel */
+@keyframes arrow-attention {
+  0%, 100% {
+    transform: translateY(-50%) translateX(0) scale(1);
+  }
+  15% {
+    transform: translateY(-50%) translateX(-6px) scale(1.05);
+  }
+  30% {
+    transform: translateY(-50%) translateX(4px) scale(1.05);
+  }
+  45% {
+    transform: translateY(-50%) translateX(-3px) scale(1.02);
+  }
+  60% {
+    transform: translateY(-50%) translateX(0) scale(1);
+  }
+}
+
+@keyframes arrow-glow {
+  0%, 100% {
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1), 0 2px 4px -1px rgba(59, 130, 246, 0.06);
+  }
+  50% {
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2), 0 4px 6px -2px rgba(59, 130, 246, 0.1);
+  }
+}
+
+.animate-arrow-attention {
+  animation: arrow-attention 2.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s, arrow-glow 2s ease-in-out 0.5s;
+  animation-fill-mode: both;
+}
+
+/* Enhanced Mobile Utilities */
+@layer utilities {
+  /* Safe area insets for mobile devices */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0);
+  }
+  
+  /* Touch action optimization */
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+  
+  /* Prevent text selection on UI elements */
+  .select-none-ui {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+/* Collapsible Sidebar Styles */
+.sidebar-collapsed .nav-text {
+  display: none;
+}
+
+.sidebar-collapsed .nav-icon {
+  margin-right: 0;
+}
+
+/* Mobile Header Improvements */
+@media (max-width: 768px) {
+  /* Ensure header items don't overflow */
+  header .flex.items-center.space-x-2,
+  header .flex.items-center.space-x-4 {
+    gap: 0.25rem;
+  }
+  
+  /* Smaller header text */
+  header h1 {
+    font-size: 1rem;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Adjust notification bell position */
+  header .relative .absolute.-top-1.-right-1 {
+    top: -2px;
+    right: -2px;
+  }
+}
+
+/* Ensure all buttons are touch-friendly */
+button, 
+[role="button"],
+.clickable {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Exception for small icon-only buttons */
+button.btn-icon-only,
+.btn-icon-only {
+  min-height: 32px;
+  min-width: 32px;
+}
+
+/* Mobile-optimized form inputs */
+@media (max-width: 640px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="date"],
+  input[type="time"],
+  select,
+  textarea {
+    font-size: 16px; /* Prevent zoom on iOS */
+    min-height: 44px;
+  }
+  
+  /* Larger checkboxes and radio buttons on mobile */
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 20px;
+    min-width: 20px;
+  }
+}
+
+/* Responsive Grid Improvements */
+.responsive-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(1, 1fr);
+}
+
+@media (min-width: 480px) {
+  .responsive-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .responsive-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Card responsive improvements */
+@media (max-width: 640px) {
+  .card {
+    padding: 0.75rem;
+  }
+  
+  .card h1, .card h2, .card h3 {
+    font-size: 1rem;
+  }
+}
+
+/* Table responsive wrapper */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive table {
+  min-width: 640px;
+}
+
+/* Modal responsive improvements */
+@media (max-width: 640px) {
+  .modal-overlay {
+    align-items: flex-end;
+  }
+  
+  .modal-content {
+    border-radius: 1rem 1rem 0 0;
+    max-height: 90vh;
+    margin: 0;
+  }
+}
+
+/* Status badges responsive */
+@media (max-width: 640px) {
+  .status-badge {
+    font-size: 0.625rem;
+    padding: 0.125rem 0.375rem;
+  }
+}
+
+/* Notification dropdown responsive */
+@media (max-width: 640px) {
+  .notifications-dropdown {
+    position: fixed;
+    top: 60px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-height: calc(100vh - 80px);
+  }
+}
+
+/* Dropdown menu responsive */
+@media (max-width: 640px) {
+  .dropdown-menu {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 1rem 1rem 0 0;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+}
+
+/* Lead cards responsive */
+@media (max-width: 640px) {
+  .lead-card {
+    padding: 0.75rem;
+  }
+  
+  .lead-card .lead-name {
+    font-size: 0.875rem;
+  }
+  
+  .lead-card .lead-info {
+    font-size: 0.75rem;
+  }
+}
+
+/* Calendar responsive improvements */
+@media (max-width: 640px) {
+  .calendar-container {
+    padding: 0.5rem;
+  }
+  
+  .calendar-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .calendar-header h2 {
+    font-size: 1rem;
+  }
+}
+
+/* Filter sidebar responsive */
+@media (max-width: 1024px) {
+  .filter-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .filter-sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Pagination responsive */
+@media (max-width: 640px) {
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+  
+  .pagination button {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Tab navigation responsive */
+@media (max-width: 640px) {
+  .tab-navigation {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  
+  .tab-navigation::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .tab-navigation .tab {
+    white-space: nowrap;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Floating action button for mobile */
+.fab {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 40;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 769px) {
+  .fab {
+    display: none;
+  }
+}
+
+/* Mobile-optimized search bar */
+@media (max-width: 640px) {
+  .search-bar {
+    position: relative;
+  }
+  
+  .search-bar input {
+    padding-left: 2.5rem;
+    font-size: 16px; /* Prevent zoom */
+  }
+  
+  .search-bar .search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+/* Stats cards responsive */
+@media (max-width: 640px) {
+  .stats-card .stats-number {
+    font-size: 1.5rem;
+  }
+  
+  .stats-card .stats-label {
+    font-size: 0.625rem;
+  }
+}
+
+/* Toast/Notification responsive */
+@media (max-width: 640px) {
+  .toast {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    width: auto;
+  }
+}
+
+/* Collapsible sidebar animation */
+.sidebar-transition {
+  transition: width 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar-transition .nav-item {
+  transition: padding 0.3s ease, justify-content 0.3s ease;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    font-size: 12pt;
+  }
+  
+  .card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}

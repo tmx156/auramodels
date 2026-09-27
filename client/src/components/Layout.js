@@ -5,7 +5,6 @@ import { useSocket } from '../context/SocketContext';
 import axios from 'axios';
 import ConnectionStatus from './ConnectionStatus';
 import MessageModal from './MessageModal';
-import PatchNotesModal, { PatchNotesProvider, PatchNotesButton } from './PatchNotesModal';
 import {
   FiHome,
   FiUsers,
@@ -1344,11 +1343,6 @@ const Layout = ({ children }) => {
         onReply={handleReplySent}
       />
 
-      {/* Patch Notes System */}
-      <PatchNotesProvider>
-        <PatchNotesModal />
-        <PatchNotesButton />
-      </PatchNotesProvider>
     </div>
   );
 };

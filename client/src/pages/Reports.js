@@ -12,6 +12,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from 'recharts';
 import LeadAnalysis from './LeadAnalysis';
+import { toLocalDateStr } from '../utils/timeUtils';
 
 // Colors for charts
 const COLORS = {
@@ -69,10 +70,13 @@ const Reports = () => {
 
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState(() => {
-    // Default to last week (Feb 2-8, 2026)
+    // Default to the current week (Monday–Sunday)
+    const today = new Date();
+    const monday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - ((today.getDay() + 6) % 7));
+    const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
     return {
-      startDate: '2026-02-02',
-      endDate: '2026-02-08',
+      startDate: toLocalDateStr(monday),
+      endDate: toLocalDateStr(sunday),
       userId: user?.role === 'admin' ? 'all' : user?.id || ''
     };
   });

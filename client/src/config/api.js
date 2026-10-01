@@ -19,6 +19,9 @@ const getBaseUrl = () => {
     const port = window.location.port;
 
     // In development (localhost on port 3000), use localhost:5000 for the server
+    if (hostname === 'localhost' && process.env.REACT_APP_API_URL) {
+      return process.env.REACT_APP_API_URL;
+    }
     if (hostname === 'localhost' && port === '3000') {
       return 'http://localhost:5000';
     }

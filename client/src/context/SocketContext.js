@@ -31,7 +31,7 @@ export const SocketProvider = ({ children }) => {
       // Enhanced WebSocket connection configuration
       const serverUrl = process.env.NODE_ENV === 'production' 
         ? window.location.origin 
-        : 'http://localhost:5000';
+        : (process.env.REACT_APP_API_URL || 'http://localhost:5000');
       console.log('🔌 Connecting to WebSocket server:', serverUrl);
       
       const newSocket = io(serverUrl, {

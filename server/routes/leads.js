@@ -3054,7 +3054,12 @@ router.put('/:id([0-9a-fA-F-]{36})', auth, async (req, res) => {
       if (key === 'sendEmail' || key === 'sendSms' || key === 'templateId') continue;
       
       // For certain fields, we want to allow null values to clear them
-      const allowNullFields = ['booking_status', 'date_booked', 'reschedule_reason'];
+      const allowNullFields = [
+        'booking_status', 'date_booked', 'reschedule_reason',
+        // Model stats (calendar modal) - clearing a stat sends null
+        'date_of_birth', 'height_inches', 'chest_inches', 'waist_inches',
+        'hips_inches', 'eye_color', 'hair_color', 'hair_length'
+      ];
       if (value === null && allowNullFields.includes(key)) {
         filteredUpdateFields[key] = null;
         continue;

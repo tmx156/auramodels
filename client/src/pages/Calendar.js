@@ -2768,7 +2768,9 @@ const Calendar = () => {
     setNotesText('');
   };
 
-  // Populate stats form when selectedEvent changes
+  // Populate stats form when a different event is opened. Keyed on the id only:
+  // background refreshes of the same event (messages load, socket updates) must
+  // not wipe stats the user is in the middle of editing.
   useEffect(() => {
     if (selectedEvent?.extendedProps?.lead) {
       const lead = selectedEvent.extendedProps.lead;
@@ -2784,7 +2786,8 @@ const Calendar = () => {
       });
       setEditingStats(false); // Reset to display mode when switching events
     }
-  }, [selectedEvent]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedEvent?.id]);
 
   // Handle saving model stats
   const handleSaveStats = async () => {

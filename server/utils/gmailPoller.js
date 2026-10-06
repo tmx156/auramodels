@@ -1364,13 +1364,49 @@ function startGmailPoller(socketIoInstance) {
     pollers.push(poller);
   }
 
-  if (pollers.length === 0) {
-    console.error('❌ No Gmail pollers started - no accounts configured');
-  } else {
+  if (pollers.length > 0) {
     console.log(`✅ Started ${pollers.length} Gmail poller(s), interval: ${POLL_INTERVAL_MS/1000}s`);
   }
 
+  // Accounts added through the Email Accounts page live only in the database,
+  // so they have no env slot above. Poll those too, keyed by their UUID (which
+  // gmailService also accepts as an accountKey, so replies route correctly).
+  startDatabasePollers(socketIoInstance, pollers).catch(err => {
+    console.error('❌ Could not start database Gmail pollers:', err.message);
+  });
+
   return pollers;
+}
+
+async function startDatabasePollers(socketIoInstance, pollers) {
+  const credentials = require('./emailCredentialResolver');
+  const accounts = await credentials.resolveAllAccounts({ force: true });
+  const polled = new Set(pollers.map(p => (p.accountConfig.email || '').toLowerCase()));
+
+  for (const account of accounts) {
+    const email = (account.email || '').toLowerCase();
+    if (account.source !== 'database' || !account.id || polled.has(email)) continue;
+    if (!account.clientId || !account.clientSecret || !account.refreshToken) continue;
+
+    ACCOUNTS[account.id] = {
+      email: account.email,
+      clientId: account.clientId,
+      clientSecret: account.clientSecret,
+      refreshToken: account.refreshToken,
+      redirectUri: account.redirectUri,
+      displayName: account.displayName || account.email
+    };
+
+    console.log(`📧 Starting Gmail poller: ${account.email} (database account)`);
+    const poller = new GmailPoller(socketIoInstance, account.id);
+    poller.start();
+    pollers.push(poller);
+    polled.add(email);
+  }
+
+  if (pollers.length === 0) {
+    console.error('❌ No Gmail pollers started - no accounts configured');
+  }
 }
 
 module.exports = { startGmailPoller, GmailPoller, ACCOUNTS };

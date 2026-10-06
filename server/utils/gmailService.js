@@ -105,9 +105,20 @@ async function resolveAccountByKey(accountKey) {
 
   try {
     const credentials = require('./emailCredentialResolver');
-    const resolved = await credentials.resolveAccount(
-      (envAccount && envAccount.email) || accountKey
-    );
+
+    // 'primary' is the fallback all over the codebase, so it should mean the
+    // account marked default on the Email Accounts page, not whatever mailbox
+    // GMAIL_EMAIL happens to hold.
+    let resolved = null;
+    if (accountKey === 'primary') {
+      const all = await credentials.resolveAllAccounts();
+      resolved = all.find(a => a.isDefault && a.refreshToken) || null;
+    }
+    if (!resolved) {
+      resolved = await credentials.resolveAccount(
+        (envAccount && envAccount.email) || accountKey
+      );
+    }
 
     if (resolved && resolved.clientId && resolved.clientSecret && resolved.refreshToken) {
       return {

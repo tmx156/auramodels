@@ -1368,40 +1368,54 @@ function startGmailPoller(socketIoInstance) {
     console.log(`✅ Started ${pollers.length} Gmail poller(s), interval: ${POLL_INTERVAL_MS/1000}s`);
   }
 
+  pollerIo = socketIoInstance;
+
   // Accounts added through the Email Accounts page live only in the database,
   // so they have no env slot above. Poll those too, keyed by their UUID (which
   // gmailService also accepts as an accountKey, so replies route correctly).
-  startDatabasePollers(socketIoInstance, pollers).catch(err => {
+  startDatabasePollers(pollers).catch(err => {
     console.error('❌ Could not start database Gmail pollers:', err.message);
   });
 
   return pollers;
 }
 
-async function startDatabasePollers(socketIoInstance, pollers) {
+// Socket.io instance from startup, reused by pollers started later on.
+let pollerIo = null;
+
+function runningPollers() {
+  return Object.values(GmailPoller.instances || {}).filter(p => p && !p.disabled);
+}
+
+/** Start a poller for one resolved database account, unless its mailbox is already polled. */
+function startPollerForAccount(account) {
+  const email = (account.email || '').toLowerCase();
+  if (account.source !== 'database' || !account.id) return null;
+  if (!account.clientId || !account.clientSecret || !account.refreshToken) return null;
+  if (runningPollers().some(p => (p.accountConfig.email || '').toLowerCase() === email)) return null;
+
+  ACCOUNTS[account.id] = {
+    email: account.email,
+    clientId: account.clientId,
+    clientSecret: account.clientSecret,
+    refreshToken: account.refreshToken,
+    redirectUri: account.redirectUri,
+    displayName: account.displayName || account.email
+  };
+
+  console.log(`📧 Starting Gmail poller: ${account.email} (database account)`);
+  const poller = new GmailPoller(pollerIo, account.id);
+  poller.start();
+  return poller;
+}
+
+async function startDatabasePollers(pollers) {
   const credentials = require('./emailCredentialResolver');
   const accounts = await credentials.resolveAllAccounts({ force: true });
-  const polled = new Set(pollers.map(p => (p.accountConfig.email || '').toLowerCase()));
 
   for (const account of accounts) {
-    const email = (account.email || '').toLowerCase();
-    if (account.source !== 'database' || !account.id || polled.has(email)) continue;
-    if (!account.clientId || !account.clientSecret || !account.refreshToken) continue;
-
-    ACCOUNTS[account.id] = {
-      email: account.email,
-      clientId: account.clientId,
-      clientSecret: account.clientSecret,
-      refreshToken: account.refreshToken,
-      redirectUri: account.redirectUri,
-      displayName: account.displayName || account.email
-    };
-
-    console.log(`📧 Starting Gmail poller: ${account.email} (database account)`);
-    const poller = new GmailPoller(socketIoInstance, account.id);
-    poller.start();
-    pollers.push(poller);
-    polled.add(email);
+    const poller = startPollerForAccount(account);
+    if (poller) pollers.push(poller);
   }
 
   if (pollers.length === 0) {
@@ -1409,4 +1423,26 @@ async function startDatabasePollers(socketIoInstance, pollers) {
   }
 }
 
-module.exports = { startGmailPoller, GmailPoller, ACCOUNTS };
+/**
+ * Start polling an account that was just connected through the Email
+ * Accounts page, so it does not have to wait for the next restart.
+ */
+async function ensureAccountPoller(accountId) {
+  if (!pollerIo) return; // pollers were never started on this process
+  const credentials = require('./emailCredentialResolver');
+  const accounts = await credentials.resolveAllAccounts({ force: true });
+  const account = accounts.find(a => a.id === accountId);
+  if (account) startPollerForAccount(account);
+}
+
+/** Stop the poller for an account that was deleted. */
+function stopAccountPoller(accountId) {
+  const key = `GmailPoller_${accountId}`;
+  const poller = GmailPoller.instances && GmailPoller.instances[key];
+  if (!poller) return;
+  poller.stop();
+  delete GmailPoller.instances[key];
+  delete ACCOUNTS[accountId];
+}
+
+module.exports = { startGmailPoller, ensureAccountPoller, stopAccountPoller, GmailPoller, ACCOUNTS };

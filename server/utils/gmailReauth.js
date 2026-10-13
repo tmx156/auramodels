@@ -294,6 +294,14 @@ async function completeAuthorization(code, state) {
   // Make the new token visible to the pollers immediately.
   credentials.invalidateCache();
 
+  // A newly added account has no poller yet; start one now rather than at
+  // the next restart. Required lazily: gmailPoller pulls in a lot at load.
+  if (saved.accountId) {
+    require('./gmailPoller').ensureAccountPoller(saved.accountId).catch(err => {
+      console.error('Could not start poller for newly connected account:', err.message);
+    });
+  }
+
   return {
     ok: true,
     email: saved.email || account.email,

@@ -44,12 +44,33 @@ router.get('/sms-health', auth, adminAuth, async (req, res) => {
 });
 
 /**
+ * A database account added without its own OAuth client gets the default
+ * account's, since every mailbox on the Workspace domain can authorise
+ * through it. Accounts that already have a client are left alone.
+ */
+async function adoptSharedClientIfMissing(id) {
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return; // env-var accounts are keyed by name
+
+  const account = await emailAccountService.getAccountById(id);
+  if (!account || account.client_id) return;
+
+  const defaultAccount = await emailAccountService.getDefaultAccount();
+  if (!defaultAccount || defaultAccount.id === id || !defaultAccount.client_id || !defaultAccount.client_secret) return;
+
+  await emailAccountService.updateAccount(id, {
+    client_id: defaultAccount.client_id,
+    client_secret: defaultAccount.client_secret
+  });
+}
+
+/**
  * @route   GET /api/email-accounts/:id/reauth-url
  * @desc    Google consent URL for one account, for the UI to open in a popup
  * @access  Private (Admin only)
  */
 router.get('/:id/reauth-url', auth, adminAuth, async (req, res) => {
   try {
+    await adoptSharedClientIfMissing(req.params.id);
     const { authUrl, account, redirectUri } = await gmailReauth.buildAuthUrl(req.params.id, req);
 
     res.json({
@@ -400,11 +421,22 @@ router.post('/', auth, async (req, res) => {
       return res.status(400).json({ message: 'Name and email are required' });
     }
 
+    // Every mailbox on the Workspace domain can authorise through the same
+    // Google OAuth client, so a new account with no client of its own borrows
+    // the default account's. Then all that is left is the Google sign-in.
+    let sharedClient = {};
+    if (!client_id && !client_secret) {
+      const defaultAccount = await emailAccountService.getDefaultAccount();
+      if (defaultAccount && defaultAccount.client_id && defaultAccount.client_secret) {
+        sharedClient = { client_id: defaultAccount.client_id, client_secret: defaultAccount.client_secret };
+      }
+    }
+
     const newAccount = await emailAccountService.createAccount({
       name,
       email,
-      client_id,
-      client_secret,
+      client_id: sharedClient.client_id || client_id,
+      client_secret: sharedClient.client_secret || client_secret,
       refresh_token,
       redirect_uri,
       display_name,
@@ -502,6 +534,9 @@ router.delete('/:id', auth, async (req, res) => {
 
     const { id } = req.params;
     const result = await emailAccountService.deleteAccount(id);
+
+    // Otherwise the deleted mailbox keeps being polled until the next restart.
+    require('../utils/gmailPoller').stopAccountPoller(id);
 
     res.json(result);
   } catch (error) {

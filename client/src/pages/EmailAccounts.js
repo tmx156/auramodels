@@ -23,6 +23,8 @@ const EmailAccounts = () => {
     is_default: false
   });
   const [formErrors, setFormErrors] = useState({});
+  // Manual OAuth fields are hidden unless needed; normally the shared client is used.
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   // State for edit modal
   const [showEditModal, setShowEditModal] = useState(false);
@@ -125,14 +127,15 @@ const EmailAccounts = () => {
    * Re-authorise one account. Opens Google in a popup so the CRM page stays
    * put, and the popup posts its result back to the listener above.
    */
-  const handleReauthorize = async (account) => {
+  const handleReauthorize = async (account, openedPopup) => {
     const identifier = account.id || account.accountKey || account.email;
     setReauthNotice(null);
     setReauthingId(identifier);
 
     // Open the window synchronously: browsers block popups opened later,
-    // after the await resolves.
-    const popup = window.open('', 'gmail-reauth', 'width=520,height=680');
+    // after the await resolves. A caller that already awaited something
+    // passes in the window it opened up front.
+    const popup = openedPopup || window.open('', 'gmail-reauth', 'width=520,height=680');
 
     try {
       const response = await axios.get(`/api/email-accounts/${encodeURIComponent(identifier)}/reauth-url`);
@@ -222,26 +225,22 @@ const EmailAccounts = () => {
     setCreateLoading(true);
     setFormErrors({});
 
+    // Without a refresh token the account still needs a Google sign-in, so
+    // open that window now, while we are still inside the click.
+    const popup = formData.refresh_token ? null : window.open('', 'gmail-reauth', 'width=520,height=680');
+
     try {
       const response = await axios.post('/api/email-accounts', formData);
+      const created = response.data.account;
 
-      setAccounts(prev => [response.data.account, ...prev]);
+      handleCloseModal();
+      await fetchAccounts();
 
-      setFormData({
-        name: '',
-        email: '',
-        client_id: '',
-        client_secret: '',
-        refresh_token: '',
-        redirect_uri: '',
-        display_name: 'Auralndn',
-        is_default: false
-      });
-      setShowCreateModal(false);
-
-      alert('Email account created successfully!');
-
+      if (popup) {
+        handleReauthorize(created, popup);
+      }
     } catch (error) {
+      if (popup && !popup.closed) popup.close();
       console.error('Error creating email account:', error);
       const errorMessage = error.response?.data?.message || 'Failed to create email account';
       setFormErrors({ submit: errorMessage });
@@ -252,6 +251,7 @@ const EmailAccounts = () => {
 
   const handleCloseModal = () => {
     setShowCreateModal(false);
+    setShowAdvanced(false);
     setFormData({
       name: '',
       email: '',
@@ -886,9 +886,9 @@ const EmailAccounts = () => {
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => handleReauthorize(account)}
-                        className={`${account.hasClientId ? 'text-purple-600 hover:text-purple-900' : 'text-gray-300 cursor-not-allowed'}`}
-                        title={account.hasClientId ? 'Authorize with Google' : 'Add Client ID first'}
-                        disabled={!account.hasClientId || reauthingId === account.id}
+                        className="text-purple-600 hover:text-purple-900"
+                        title={account.hasRefreshToken ? 'Re-connect with Google' : 'Connect with Google'}
+                        disabled={reauthingId === account.id}
                       >
                         {reauthingId === account.id ? (
                           <FiRefreshCw className="h-4 w-4 animate-spin" />
@@ -1046,10 +1046,25 @@ const EmailAccounts = () => {
                 />
               </div>
 
+              <div className="bg-blue-50 border border-blue-200 rounded-md p-3 text-sm text-blue-800">
+                After you click <strong>Create &amp; Connect</strong>, a Google window opens. Sign in as this
+                email address and click <strong>Allow</strong> - that's it.
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowAdvanced(prev => !prev)}
+                className="text-xs text-gray-500 hover:text-gray-700 underline"
+              >
+                {showAdvanced ? 'Hide advanced settings' : 'Advanced: use my own OAuth credentials'}
+              </button>
+
+              {showAdvanced && (
+              <>
               <hr className="my-4" />
               <h3 className="text-sm font-medium text-gray-700">OAuth Credentials (Optional)</h3>
               <p className="text-xs text-gray-500 mb-4">
-                Configure these settings to enable sending emails from this account.
+                Leave blank to use the same Google app as the default account.
               </p>
 
               {/* Client ID Field */}
@@ -1112,6 +1127,8 @@ const EmailAccounts = () => {
                   placeholder="https://your-domain/api/gmail/oauth2callback"
                 />
               </div>
+              </>
+              )}
 
               {/* Is Default Checkbox */}
               <div className="flex items-center">
@@ -1157,7 +1174,7 @@ const EmailAccounts = () => {
                   ) : (
                     <>
                       <FiPlus className="h-4 w-4" />
-                      <span>Create Account</span>
+                      <span>Create &amp; Connect</span>
                     </>
                   )}
                 </button>
@@ -1358,7 +1375,7 @@ const EmailAccounts = () => {
               </h3>
               <div className="mt-2 px-7 py-3">
                 <p className="text-sm text-gray-500">
-                  Are you sure you want to delete this email account? Users assigned to this account will be unassigned.
+                  Are you sure you want to delete this email account? It stops being checked for new mail straight away, and users or templates assigned to it will be unassigned.
                 </p>
               </div>
             </div>

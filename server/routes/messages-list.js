@@ -5,11 +5,11 @@ const router = express.Router();
 const { auth } = require('../middleware/auth');
 const MessagingService = require('../utils/messagingService');
 const dbManager = require('../database-connection-manager');
-const { createClient } = require('@supabase/supabase-js');
 
-// Initialize Supabase using centralized config
-const config = require('../config');
-const supabase = createClient(config.supabase.url, config.supabase.anonKey);
+// Service-role client: row-level security returns no rows from `leads` to the
+// anon key, which made every message look orphaned and the list come back empty.
+const { getSupabaseClient } = require('../config/supabase-client');
+const supabase = getSupabaseClient();
 
 // Import SMS service for sending
 const { sendSMS } = require('../utils/smsService');

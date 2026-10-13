@@ -162,12 +162,15 @@ const Dashboard = () => {
     // Listen to message events
     socket.on('new_message', handleMessageUpdate);
     socket.on('message_read', handleMessageUpdate);
+    // The Gmail poller announces received email as message_received.
+    socket.on('message_received', handleMessageUpdate);
 
     console.log('📡 Dashboard: Socket listeners registered for real-time updates');
 
     return () => {
       socket.off('new_message', handleMessageUpdate);
       socket.off('message_read', handleMessageUpdate);
+      socket.off('message_received', handleMessageUpdate);
     };
   }, [socket, fetchUnreadMessages, fetchUpcomingCallbacks]);
 

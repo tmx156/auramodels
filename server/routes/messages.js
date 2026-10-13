@@ -5,7 +5,6 @@ const router = express.Router();
 const { auth } = require('../middleware/auth');
 const MessagingService = require('../utils/messagingService');
 const emailAccountService = require('../utils/emailAccountService');
-const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
 
 // Legacy getDb function - to be removed
@@ -13,9 +12,9 @@ const getDb = () => {
   throw new Error('SQLite is disabled - use Supabase instead');
 };
 
-// Initialize Supabase - use centralized config
-const config = require('../config');
-const supabase = createClient(config.supabase.url, config.supabase.anonKey);
+// Service-role client: row-level security hides `leads` from the anon key.
+const { getSupabaseClient } = require('../config/supabase-client');
+const supabase = getSupabaseClient();
 
 // Get message history for a lead
 router.get('/lead/:leadId', auth, async (req, res) => {

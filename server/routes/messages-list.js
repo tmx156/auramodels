@@ -106,9 +106,21 @@ router.get('/', auth, async (req, res) => {
     // 2) Pull communications from messages table (primary source)
     try {
       const isAdmin = user.role === 'admin';
-      const msgColumns = 'id, lead_id, type, content, email_body, sms_body, subject, sent_by, sent_by_name, status, email_status, read_status, delivery_status, provider_message_id, delivery_provider, delivery_attempts, sent_at, created_at, attachments';
+      const msgColumns = 'id, lead_id, type, content, email_body, sms_body, subject, sent_by, sent_by_name, status, email_status, read_status, delivery_status, provider_message_id, delivery_provider, delivery_attempts, sent_at, created_at, attachments, gmail_account_key';
 
       let messageData = [];
+
+      // A booker also owns everything that arrives in their own mailbox (the
+      // email account assigned to them on /users), whoever's lead it is.
+      let ownMailboxKey = null;
+      if (!isAdmin) {
+        const { data: me } = await supabase
+          .from('users')
+          .select('assigned_email_account_id')
+          .eq('id', user.id)
+          .single();
+        ownMailboxKey = (me && me.assigned_email_account_id) || null;
+      }
 
       if (isAdmin) {
         // Admins see all messages (bounded by time window and limit)
@@ -165,9 +177,23 @@ router.get('/', auth, async (req, res) => {
             if (error) console.error('Error fetching messages batch:', error);
             if (data) messageData.push(...data);
           }
-          messageData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-          messageData = messageData.slice(0, validatedLimit);
         }
+
+        if (ownMailboxKey) {
+          let q = supabase.from('messages').select(msgColumns)
+            .eq('gmail_account_key', ownMailboxKey)
+            .gte('created_at', createdAfter)
+            .order('created_at', { ascending: false })
+            .limit(validatedLimit);
+          if (typeFilter) q = q.eq('type', typeFilter);
+          const { data, error } = await q;
+          if (error) console.error('Error fetching own-mailbox messages:', error);
+          const have = new Set(messageData.map(m => m.id));
+          for (const row of data || []) if (!have.has(row.id)) messageData.push(row);
+        }
+
+        messageData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        messageData = messageData.slice(0, validatedLimit);
       }
 
       if (messageData.length > 0) {
@@ -195,6 +221,7 @@ router.get('/', auth, async (req, res) => {
         // Filter messages based on user permissions
         const filteredMessages = messageData.filter(msg => {
           if (isAdmin) return true;
+          if (ownMailboxKey && msg.gmail_account_key === ownMailboxKey) return true;
           const lead = leadMap.get(msg.lead_id);
           return lead && lead.booker_id === user.id;
         });

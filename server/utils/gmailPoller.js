@@ -755,7 +755,8 @@ class GmailPoller {
     await this.updateLeadHistory(lead, subject, bodyText || '(No content)', emailReceivedDate);
 
     // Emit events with HTML content for proper rendering
-    this.emitEvents(lead, recordId, subject, bodyText || '(No content)', emailReceivedDate, htmlBody);
+    const mailboxOwnerIds = await this.getMailboxOwnerIds();
+    this.emitEvents(lead, recordId, subject, bodyText || '(No content)', emailReceivedDate, htmlBody, mailboxOwnerIds);
 
     // Reduced logging to prevent Railway rate limits - only log in verbose mode
     this.log(`✅ [${this.accountConfig.displayName}] Email: "${subject.substring(0, 40)}..." from ${fromEmail}`, true);
@@ -1158,13 +1159,35 @@ class GmailPoller {
   }
 
   /**
+   * Users who have this mailbox assigned on /users. Only database accounts
+   * (keyed by UUID) can be assigned, so env-slot pollers have no owners.
+   * Cached briefly since this runs once per received email.
+   */
+  async getMailboxOwnerIds() {
+    if (!/^[0-9a-f-]{36}$/i.test(this.accountKey)) return [];
+    if (this.ownerCache && Date.now() < this.ownerCache.expires) return this.ownerCache.ids;
+
+    const { data, error } = await this.supabase
+      .from('users')
+      .select('id')
+      .eq('assigned_email_account_id', this.accountKey);
+    const ids = error ? [] : (data || []).map(u => u.id);
+    this.ownerCache = { ids, expires: Date.now() + 60 * 1000 };
+    return ids;
+  }
+
+  /**
    * Emit Socket.IO events
    */
-  emitEvents(lead, messageId, subject, body, emailReceivedDate, htmlBody = null) {
+  emitEvents(lead, messageId, subject, body, emailReceivedDate, htmlBody = null, mailboxOwnerIds = []) {
     if (!this.io) return;
 
     const rooms = [];
     if (lead.booker_id) rooms.push(`user_${lead.booker_id}`);
+    // Users whose own mailbox received it, even if the lead is someone else's.
+    for (const ownerId of mailboxOwnerIds) {
+      if (ownerId !== lead.booker_id) rooms.push(`user_${ownerId}`);
+    }
     rooms.push('admins');
 
     const payload = {
@@ -1400,7 +1423,9 @@ function startPollerForAccount(account) {
     clientSecret: account.clientSecret,
     refreshToken: account.refreshToken,
     redirectUri: account.redirectUri,
-    displayName: account.displayName || account.email
+    // The mailbox address, not the sender display name: added accounts all
+    // share "Auralndn", which made their log lines indistinguishable.
+    displayName: account.email
   };
 
   console.log(`📧 Starting Gmail poller: ${account.email} (database account)`);

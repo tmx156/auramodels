@@ -113,85 +113,13 @@ router.get('/', auth, async (req, res) => {
  */
 router.get('/dropdown', auth, async (req, res) => {
   try {
-    const dropdown = [];
-
-    // Add env var accounts first (these always work)
-    const { ACCOUNTS } = gmailService;
-
-    if (ACCOUNTS.primary && ACCOUNTS.primary.email) {
-      dropdown.push({
-        id: 'primary',
-        name: 'Primary Email (Env)',
-        email: ACCOUNTS.primary.email,
-        is_default: true,
-        isEnvVar: true
-      });
-    }
-
-    if (ACCOUNTS.secondary && ACCOUNTS.secondary.email) {
-      dropdown.push({
-        id: 'secondary',
-        name: 'Secondary Email (Env)',
-        email: ACCOUNTS.secondary.email,
-        is_default: false,
-        isEnvVar: true
-      });
-    }
-
-    if (ACCOUNTS.tertiary && ACCOUNTS.tertiary.email) {
-      dropdown.push({
-        id: 'tertiary',
-        name: 'Tertiary Email (Env)',
-        email: ACCOUNTS.tertiary.email,
-        is_default: false,
-        isEnvVar: true
-      });
-    }
-
-    if (ACCOUNTS.quaternary && ACCOUNTS.quaternary.email) {
-      dropdown.push({
-        id: 'quaternary',
-        name: '4th Email (Env)',
-        email: ACCOUNTS.quaternary.email,
-        is_default: false,
-        isEnvVar: true
-      });
-    }
-
-    if (ACCOUNTS.quinary && ACCOUNTS.quinary.email) {
-      dropdown.push({
-        id: 'quinary',
-        name: '5th Email (Env)',
-        email: ACCOUNTS.quinary.email,
-        is_default: false,
-        isEnvVar: true
-      });
-    }
-
-    if (ACCOUNTS.senary && ACCOUNTS.senary.email) {
-      dropdown.push({
-        id: 'senary',
-        name: '6th Email (Env)',
-        email: ACCOUNTS.senary.email,
-        is_default: false,
-        isEnvVar: true
-      });
-    }
-
-    if (ACCOUNTS.septenary && ACCOUNTS.septenary.email) {
-      dropdown.push({
-        id: 'septenary',
-        name: '7th Email (Env)',
-        email: ACCOUNTS.septenary.email,
-        is_default: false,
-        isEnvVar: true
-      });
-    }
-
-    // Also add database accounts if any
+    // Only accounts that can actually send: active database accounts with a
+    // Google token, plus env-var slots that are really configured. Unused env
+    // slots carry placeholder addresses (bookings@example.com etc.) and must
+    // not be offered.
     const accounts = await emailAccountService.getAllAccounts();
     const dbAccounts = accounts
-      .filter(a => a.is_active)
+      .filter(a => a.is_active && a.hasRefreshToken)
       .map(a => ({
         id: a.id,
         name: a.name,
@@ -200,9 +128,27 @@ router.get('/dropdown', auth, async (req, res) => {
         isEnvVar: false
       }));
 
-    dropdown.push(...dbAccounts);
+    const dbEmails = new Set(accounts.map(a => (a.email || '').toLowerCase()));
+    const { ACCOUNTS } = gmailService;
+    const envLabels = {
+      primary: 'Primary Email (Env)', secondary: 'Secondary Email (Env)', tertiary: 'Tertiary Email (Env)',
+      quaternary: '4th Email (Env)', quinary: '5th Email (Env)', senary: '6th Email (Env)', septenary: '7th Email (Env)'
+    };
+    const envAccounts = Object.keys(envLabels)
+      .filter(key => {
+        const acc = ACCOUNTS[key];
+        // A mailbox that also exists as a database account is listed once, as that.
+        return acc && acc.email && acc.clientId && !dbEmails.has(acc.email.toLowerCase());
+      })
+      .map(key => ({
+        id: key,
+        name: envLabels[key],
+        email: ACCOUNTS[key].email,
+        is_default: false,
+        isEnvVar: true
+      }));
 
-    res.json(dropdown);
+    res.json([...dbAccounts, ...envAccounts]);
   } catch (error) {
     console.error('Error getting email accounts dropdown:', error);
     res.status(500).json({ message: 'Server error', error: error.message });

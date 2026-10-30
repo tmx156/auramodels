@@ -498,7 +498,7 @@ const ContractSigning = () => {
 
                 <div style={{ position: 'absolute', bottom: '40px', left: 0, right: 0, textAlign: 'center', fontSize: '11px', color: '#666' }}>
                   <p>AURALNDN IS A TRADING NAME OF S&A ADVERTISING LTD</p>
-                  <p>COMPANY NO 8708429 VAT REG NO 171339904</p>
+                  <p>COMPANY NO 8708429</p>
                 </div>
               </div>
             ) : (

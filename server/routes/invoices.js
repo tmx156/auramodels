@@ -290,7 +290,6 @@ router.post('/', auth, async (req, res) => {
 
     // Calculate totals and build line items
     let subtotal = 0;
-    let vatAmount = 0;
     const lineItems = [];
 
     for (const item of items) {
@@ -300,23 +299,8 @@ router.post('/', auth, async (req, res) => {
       const quantity = item.quantity || 1;
       const lineTotal = parseFloat(pkg.price) * quantity;
 
-      if (pkg.vat_inclusive) {
-        // Price includes VAT
-        const vatRate = parseFloat(pkg.vat_rate || 20);
-        const vatMultiplier = vatRate / 100;
-        const netAmount = lineTotal / (1 + vatMultiplier);
-        const itemVat = lineTotal - netAmount;
-
-        subtotal += netAmount;
-        vatAmount += itemVat;
-      } else {
-        // Price excludes VAT
-        const vatRate = parseFloat(pkg.vat_rate || 20);
-        const itemVat = lineTotal * (vatRate / 100);
-
-        subtotal += lineTotal;
-        vatAmount += itemVat;
-      }
+      // Not VAT registered: the listed price is what the client pays
+      subtotal += lineTotal;
 
       lineItems.push({
         packageId: pkg.id,
@@ -331,7 +315,7 @@ router.post('/', auth, async (req, res) => {
       });
     }
 
-    const total = subtotal + vatAmount;
+    const total = subtotal;
 
     // Generate invoice number
     const invoiceNumber = await generateInvoiceNumber();
@@ -346,8 +330,8 @@ router.post('/', auth, async (req, res) => {
       client_phone: lead.phone,
       items: lineItems,
       subtotal: Math.round(subtotal * 100) / 100,
-      vat_rate: 20,
-      vat_amount: Math.round(vatAmount * 100) / 100,
+      vat_rate: 0,
+      vat_amount: 0,
       total_amount: Math.round(total * 100) / 100,
       currency: 'GBP',
       payment_method: paymentMethod || null,

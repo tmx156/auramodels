@@ -190,7 +190,6 @@ async function generateInvoicePDF(invoice, options = {}) {
 
       // Subtotal
       const subtotal = invoice.subtotal || 0;
-      const vatAmount = invoice.vatAmount || invoice.vat_amount || 0;
       const totalAmount = invoice.totalAmount || invoice.total_amount || 0;
 
       doc.fontSize(10)
@@ -199,12 +198,9 @@ async function generateInvoicePDF(invoice, options = {}) {
          .text('Subtotal:', 380, totalsTop, { width: 80, align: 'right' })
          .text(formatCurrency(subtotal), 470, totalsTop, { width: 65, align: 'right' });
 
-      doc.text('VAT (20%):', 380, totalsTop + 20, { width: 80, align: 'right' })
-         .text(formatCurrency(vatAmount), 470, totalsTop + 20, { width: 65, align: 'right' });
-
       // Total line
-      doc.moveTo(380, totalsTop + 40)
-         .lineTo(545, totalsTop + 40)
+      doc.moveTo(380, totalsTop + 20)
+         .lineTo(545, totalsTop + 20)
          .strokeColor(primaryColor)
          .lineWidth(1)
          .stroke();
@@ -212,8 +208,8 @@ async function generateInvoicePDF(invoice, options = {}) {
       doc.fontSize(14)
          .font('Helvetica-Bold')
          .fillColor(primaryColor)
-         .text('TOTAL:', 380, totalsTop + 50, { width: 80, align: 'right' })
-         .text(formatCurrency(totalAmount), 470, totalsTop + 50, { width: 65, align: 'right' });
+         .text('TOTAL:', 380, totalsTop + 30, { width: 80, align: 'right' })
+         .text(formatCurrency(totalAmount), 470, totalsTop + 30, { width: 65, align: 'right' });
 
       // Payment Information
       const paymentMethod = invoice.paymentMethod || invoice.payment_method;
@@ -373,7 +369,6 @@ function generateInvoiceHTML(invoice) {
   const clientPhone = invoice.clientPhone || invoice.client_phone;
   const items = invoice.items || [];
   const subtotal = invoice.subtotal || 0;
-  const vatAmount = invoice.vatAmount || invoice.vat_amount || 0;
   const totalAmount = invoice.totalAmount || invoice.total_amount || 0;
 
   const itemRows = items.map(item => `
@@ -458,10 +453,6 @@ function generateInvoiceHTML(invoice) {
             <tr>
               <td>Subtotal:</td>
               <td>${formatCurrency(subtotal)}</td>
-            </tr>
-            <tr>
-              <td>VAT (20%):</td>
-              <td>${formatCurrency(vatAmount)}</td>
             </tr>
             <tr class="total-row">
               <td>TOTAL:</td>

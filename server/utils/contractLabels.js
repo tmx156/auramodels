@@ -62,7 +62,6 @@ const DEFAULT_LABELS = {
   payment_finance_label: 'FINANCE',
   payment_ideal4finance_label: 'IDEAL4FINANCE',
   payment_subtotal_label: 'SUB TOTAL',
-  payment_vat_label: 'VAT@',
   payment_auth_code_label: 'AUTHORISATION CODE',
   payment_ideal4finance_ref_label: 'IDEAL4FINANCE',
   payment_total_label: 'TOTAL',

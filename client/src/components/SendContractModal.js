@@ -83,7 +83,9 @@ const SendContractModal = ({
         const data = JSON.parse(saved);
         // Check if saved data is less than 24 hours old
         const hoursSinceSave = (Date.now() - data.timestamp) / (1000 * 60 * 60);
-        if (hoursSinceSave < 24) {
+        // Drafts saved before VAT was removed carry VAT totals - start those fresh
+        const hasVat = (data.contractDetails?.vatAmount || 0) > 0;
+        if (hoursSinceSave < 24 && !hasVat) {
           return data;
         } else {
           // Clear expired data
@@ -228,24 +230,10 @@ const SendContractModal = ({
       if (showResumePrompt) return;
 
       const price = packageData?.price || 0;
-      const vatRate = packageData?.vatRate || 20;
-      let subtotal, vatAmount, total;
-      if (invoiceData?.subtotal !== undefined) {
-        subtotal = invoiceData.subtotal;
-        vatAmount = invoiceData.vatAmount || 0;
-        total = invoiceData.total || subtotal + vatAmount;
-      } else if (packageData?.vatInclusive) {
-        // Price already includes VAT - extract net amount
-        const vatMultiplier = vatRate / 100;
-        subtotal = price / (1 + vatMultiplier);
-        vatAmount = price - subtotal;
-        total = price;
-      } else {
-        // Price excludes VAT - add it
-        subtotal = price;
-        vatAmount = price * (vatRate / 100);
-        total = price + vatAmount;
-      }
+      // No VAT is charged: the total is the price as listed
+      const subtotal = invoiceData?.subtotal !== undefined ? invoiceData.subtotal : price;
+      const vatAmount = 0;
+      const total = subtotal;
 
       // Fetch next invoice number from API
       const fetchNextInvoiceNumber = async () => {
@@ -318,7 +306,7 @@ const SendContractModal = ({
 
         // Payment
         subtotal: subtotal,
-        vatRate: packageData?.vatRate || 20,
+        vatRate: 0,
         vatAmount: vatAmount,
         total: total,
         paymentMethod: initPaymentMethod,
@@ -399,14 +387,16 @@ const SendContractModal = ({
   // Recalculate totals when subtotal changes
   const updateSubtotal = (value) => {
     const subtotal = parseFloat(value) || 0;
-    const vatRate = packageData?.vatRate || 20;
-    const vatAmount = subtotal * (vatRate / 100);
-    const total = subtotal + vatAmount;
     setContractDetails(prev => ({
       ...prev,
       subtotal,
-      vatAmount,
-      total
+      vatAmount: 0,
+      total: subtotal,
+      // Keep finance figures in step with the new total
+      ...(prev.paymentMethod === 'finance' && { cashPrice: subtotal }),
+      ...(prev.paymentMethod === 'ideal4finance' && {
+        financeAmount: Math.max(0, subtotal - (prev.depositAmount || 0))
+      })
     }));
   };
 
@@ -1205,10 +1195,10 @@ const SendContractModal = ({
                   PAYMENT DETAILS
                 </h3>
                 <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-                  {/* Subtotal/VAT/Total */}
-                  <div className="grid grid-cols-3 gap-4">
+                  {/* Subtotal/Total */}
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">Subtotal (excl VAT)</label>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Subtotal</label>
                       <div className="relative">
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">£</span>
                         <input
@@ -1217,18 +1207,6 @@ const SendContractModal = ({
                           value={contractDetails.subtotal}
                           onChange={(e) => updateSubtotal(e.target.value)}
                           className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">VAT ({contractDetails.vatRate || 20}%)</label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">£</span>
-                        <input
-                          type="text"
-                          value={contractDetails.vatAmount.toFixed(2)}
-                          readOnly
-                          className="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-100 text-gray-600"
                         />
                       </div>
                     </div>
@@ -1779,10 +1757,6 @@ const SendContractModal = ({
                   <div className="flex justify-between">
                     <span className="text-gray-500">Subtotal:</span>
                     <span>{formatCurrency(contractDetails.subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">VAT ({contractDetails.vatRate || 20}%):</span>
-                    <span>{formatCurrency(contractDetails.vatAmount)}</span>
                   </div>
                   <div className="flex justify-between font-semibold text-base border-t pt-1 mt-1">
                     <span>Total:</span>

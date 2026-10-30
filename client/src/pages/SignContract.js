@@ -389,12 +389,8 @@ const SignContract = () => {
             <h3 className="font-semibold text-gray-700 mb-3">Payment Details</h3>
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-600">Subtotal (excl. VAT):</span>
+                <span className="text-gray-600">Subtotal:</span>
                 <span className="font-medium">{formatCurrency(contractData.subtotal)}</span>
-              </div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-600">VAT (20%):</span>
-                <span className="font-medium">{formatCurrency(contractData.vatAmount)}</span>
               </div>
               <div className="flex justify-between items-center pt-2 border-t border-gray-300">
                 <span className="font-semibold text-lg">Total:</span>

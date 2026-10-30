@@ -291,7 +291,7 @@ const PackageSelectionModal = ({
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <Package className="w-5 h-5 mr-2 text-green-600" />
-                  Main Packages (VAT Inclusive)
+                  Main Packages
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {packages.main.map((pkg) => (
@@ -401,13 +401,11 @@ const PackageSelectionModal = ({
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <Plus className="w-5 h-5 mr-2 text-green-600" />
-                  Individual Items (+VAT)
+                  Individual Items
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {packages.individual.map((pkg) => {
                     const quantity = selectedIndividuals[pkg.id] || 0;
-                    const price = parseFloat(pkg.price) || 0;
-                    const priceWithVat = price * 1.2; // Add 20% VAT for display
 
                     return (
                       <div
@@ -424,10 +422,6 @@ const PackageSelectionModal = ({
                             <p className="text-sm text-gray-500 mt-1">{pkg.description}</p>
                             <p className="text-lg font-semibold text-gray-900 mt-2">
                               {formatCurrency(pkg.price)}
-                              <span className="text-sm font-normal text-gray-500"> +VAT</span>
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              ({formatCurrency(priceWithVat)} inc. VAT)
                             </p>
                           </div>
 
@@ -490,10 +484,6 @@ const PackageSelectionModal = ({
                     <div className="flex justify-between text-gray-600">
                       <span>Subtotal</span>
                       <span>{formatCurrency(totals.subtotal)}</span>
-                    </div>
-                    <div className="flex justify-between text-gray-600">
-                      <span>VAT (20%)</span>
-                      <span>{formatCurrency(totals.vatAmount)}</span>
                     </div>
                   </div>
                 </div>
@@ -611,7 +601,7 @@ const PackageSelectionModal = ({
                             code: 'individual',
                             price: totals.subtotal,
                             vatInclusive: false,
-                            vatRate: 20,
+                            vatRate: 0,
                             includes: individualItemsList.flatMap(i => i.includes || []),
                             // Explicit flags based on actual purchased items (by name/code, not includes)
                             hasZCard: allItemNames.includes('z-card') || allItemNames.includes('zcard'),

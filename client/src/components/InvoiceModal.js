@@ -364,10 +364,6 @@ const InvoiceModal = ({
                       <td colSpan="3" className="px-4 py-2 text-right text-sm text-gray-600">Subtotal</td>
                       <td className="px-4 py-2 text-right text-sm font-medium">{formatCurrency(invoice.subtotal)}</td>
                     </tr>
-                    <tr>
-                      <td colSpan="3" className="px-4 py-2 text-right text-sm text-gray-600">VAT (20%)</td>
-                      <td className="px-4 py-2 text-right text-sm font-medium">{formatCurrency(invoice.vatAmount)}</td>
-                    </tr>
                     <tr className="border-t-2 border-gray-200">
                       <td colSpan="3" className="px-4 py-3 text-right text-lg font-semibold">Total</td>
                       <td className="px-4 py-3 text-right text-xl font-bold text-gray-900">{formatCurrency(invoice.totalAmount)}</td>

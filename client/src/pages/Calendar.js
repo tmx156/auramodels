@@ -5545,10 +5545,13 @@ const Calendar = () => {
           onSendContract={(data) => {
             // Store the package and invoice data for the contract
             setSelectedPackage(data.package);
+            // No VAT: the invoice total is the listed prices added up
+            const itemsTotal = (data.totals.items || []).reduce((sum, item) => sum + (item.lineTotal || 0), 0);
+            const invoiceTotal = Math.round((itemsTotal || data.totals.subtotal || 0) * 100) / 100;
             setContractInvoiceData({
-              subtotal: data.totals.subtotal,
-              vatAmount: data.totals.vatAmount,
-              total: data.totals.total
+              subtotal: invoiceTotal,
+              vatAmount: 0,
+              total: invoiceTotal
             });
             setShowPackageModal(false);
             setContractLead(selectedEvent?.extendedProps?.lead); // Capture lead independently

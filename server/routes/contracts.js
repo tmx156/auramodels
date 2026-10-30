@@ -187,8 +187,8 @@ router.post('/create', auth, async (req, res) => {
 
         // Financials (for invoice document)
         subtotal: contractDetails.subtotal || 0,
-        vatRate: contractDetails.vatRate || 20,
-        vatAmount: contractDetails.vatAmount || 0,
+        vatRate: 0,
+        vatAmount: 0,
         total: contractDetails.total || 0,
 
         // Payment
@@ -297,8 +297,8 @@ router.post('/create', auth, async (req, res) => {
 
         // Financials from edited form
         subtotal: contractDetails.subtotal || 0,
-        vatRate: contractDetails.vatRate || 20,
-        vatAmount: contractDetails.vatAmount || 0,
+        vatRate: 0,
+        vatAmount: 0,
         total: contractDetails.total || 0,
 
         // Payment from edited form
@@ -590,7 +590,7 @@ router.post('/send/:contractId', auth, async (req, res) => {
       ${totalAmount ? `
       <div class="order-summary">
         <h4>Order Summary</h4>
-        <p><strong>Total Amount:</strong> ${totalAmount} (inc. VAT)</p>
+        <p><strong>Total Amount:</strong> ${totalAmount}</p>
         ${packageInfo ? `<p><strong>Details:</strong> ${packageInfo}</p>` : ''}
       </div>
       ` : ''}
@@ -621,7 +621,7 @@ router.post('/send/:contractId', auth, async (req, res) => {
     <div class="footer">
       <p><strong>Auralndn</strong></p>
       <p>A trading name of S&A Advertising Ltd</p>
-      <p>Company No 8708429 | VAT Reg No 171339904</p>
+      <p>Company No 8708429</p>
       <p>129A Weedington Rd, London NW5 4NX</p>
     </div>
   </div>

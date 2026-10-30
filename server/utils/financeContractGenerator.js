@@ -22,7 +22,7 @@ const DEFAULT_FINANCE_TEMPLATE = {
   creditor_acknowledgement_text: 'The creditor confirms that the affordability assessment has been conducted and the customer has been provided with adequate pre-contract information in accordance with the Consumer Credit Act 1974.',
   cca_notice: 'This is a Credit Agreement regulated by the Consumer Credit Act 1974. Sign it only if you want to be legally bound by its terms. Under the Consumer Credit Act 1974, you have the right to withdraw from this agreement within 14 days.',
   footer_line1: 'Auralndn is a trading name of S&A Advertising Ltd',
-  footer_line2: 'Company No 8708429 VAT Reg No 171339904'
+  footer_line2: 'Company No 8708429'
 };
 
 /**
@@ -515,7 +515,7 @@ function generateCardPayHTML(cardDetails, contractData) {
 
         <div class="footer">
           <p>AURALNDN IS A TRADING NAME OF S&A ADVERTISING LTD</p>
-          <p>COMPANY NO 8708429 VAT REG NO 171339904</p>
+          <p>COMPANY NO 8708429</p>
         </div>
       </div>
     </body>

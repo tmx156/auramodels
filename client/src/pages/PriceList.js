@@ -8,8 +8,6 @@ const EMPTY_FORM = {
   code: '',
   type: 'main',
   price: '',
-  vatInclusive: true,
-  vatRate: '20',
   imageCount: '',
   totalValue: '',
   description: '',
@@ -74,8 +72,6 @@ const PriceList = () => {
       code: pkg.code || '',
       type: pkg.type || 'main',
       price: String(pkg.price ?? ''),
-      vatInclusive: pkg.vatInclusive ?? true,
-      vatRate: String(pkg.vatRate ?? '20'),
       imageCount: pkg.imageCount != null ? String(pkg.imageCount) : '',
       totalValue: pkg.totalValue != null ? String(pkg.totalValue) : '',
       description: pkg.description || '',
@@ -121,8 +117,6 @@ const PriceList = () => {
         code: formData.code.trim(),
         type: formData.type,
         price: parseFloat(formData.price),
-        vatInclusive: formData.vatInclusive,
-        vatRate: parseFloat(formData.vatRate) || 20,
         imageCount: formData.imageCount ? parseInt(formData.imageCount) : null,
         totalValue: formData.totalValue ? parseFloat(formData.totalValue) : null,
         description: formData.description.trim() || null,
@@ -227,11 +221,6 @@ const PriceList = () => {
       {/* Price */}
       <div className="mb-3">
         <div className="text-2xl font-bold text-gray-900">{formatPrice(pkg.price ?? 0)}</div>
-        <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
-          <span>{pkg.vatInclusive ? 'VAT inclusive' : 'Excl. VAT'}</span>
-          <span className="text-gray-300">|</span>
-          <span>{pkg.vatRate ?? 20}% VAT</span>
-        </div>
         {pkg.totalValue && (
           <div className="text-sm text-gray-400 line-through mt-0.5">
             Total value: {formatPrice(pkg.totalValue)}
@@ -416,8 +405,8 @@ const PriceList = () => {
                 </div>
               </div>
 
-              {/* Price + VAT Rate */}
-              <div className="grid grid-cols-2 gap-3">
+              {/* Price */}
+              <div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Price (GBP) *</label>
                   <input
@@ -431,33 +420,6 @@ const PriceList = () => {
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">VAT Rate (%)</label>
-                  <input
-                    type="number"
-                    name="vatRate"
-                    value={formData.vatRate}
-                    onChange={handleChange}
-                    step="0.1"
-                    min="0"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-              </div>
-
-              {/* VAT Inclusive toggle */}
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  name="vatInclusive"
-                  id="vatInclusive"
-                  checked={formData.vatInclusive}
-                  onChange={handleChange}
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                />
-                <label htmlFor="vatInclusive" className="text-sm text-gray-700">
-                  Price is VAT inclusive
-                </label>
               </div>
 
               {/* Image Count + Total Value */}

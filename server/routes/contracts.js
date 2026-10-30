@@ -669,8 +669,9 @@ router.post('/send/:contractId', auth, async (req, res) => {
       }
     }
 
-    // Send SMS (if enabled in template AND phone number available)
-    const shouldSendSms = template && template.send_sms === true;
+    // Send SMS when a phone number is available - on by default like the email,
+    // only skipped when a contract_signing template has SMS switched off
+    const shouldSendSms = template ? template.send_sms === true : true;
     if (shouldSendSms && recipientPhone) {
       try {
         let smsBody;

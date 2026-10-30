@@ -687,7 +687,13 @@ if (fs.existsSync(buildPath)) {
   app.use(express.static(buildPath, {
     maxAge: '1y',
     etag: true,
-    lastModified: true
+    lastModified: true,
+    // index.html must never be cached, or browsers keep loading the old app after a deploy
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('index.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    }
   }));
 } else {
   console.error('❌ React build directory not found:', buildPath);
@@ -704,6 +710,7 @@ app.get('*', (req, res) => {
   
   // Check if index.html exists
   if (fs.existsSync(indexPath)) {
+    res.setHeader('Cache-Control', 'no-cache');
     res.sendFile(indexPath);
   } else {
     res.status(500).send(`

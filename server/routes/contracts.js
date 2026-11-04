@@ -614,15 +614,16 @@ router.post('/send/:contractId', auth, async (req, res) => {
       <div class="link-backup">${contract.signing_url}</div>
       <div class="contact">
         <p>Need help? Contact us:</p>
-        <p>Email: <a href="mailto:hello@example.com">hello@example.com</a></p>
-        <p>Website: <a href="https://www.example.com">www.example.com</a></p>
+        <p>Contact: <a href="mailto:Info@auralndn.com">Info@auralndn.com</a></p>
+        <p>Website: <a href="https://auralndn.com">https://auralndn.com</a></p>
       </div>
     </div>
     <div class="footer">
-      <p><strong>Auralndn</strong></p>
-      <p>A trading name of S&A Advertising Ltd</p>
-      <p>Company No 8708429</p>
-      <p>129A Weedington Rd, London NW5 4NX</p>
+      <p><strong>Aura Model House Ltd</strong></p>
+      <p>Company Number: 17044660</p>
+      <p>99 Wallis Road</p>
+      <p>London</p>
+      <p>E9 5LN</p>
     </div>
   </div>
 </body>
@@ -1518,12 +1519,17 @@ router.post('/sign/:token', async (req, res) => {
         </ul>
       </div>
 
-      <p>If you have any questions about your order, please don't hesitate to contact us at <a href="mailto:sales@example.com" style="color: #2563eb;">sales@example.com</a></p>
+      <p>If you have any questions about your order, please don't hesitate to contact us at <a href="mailto:Info@auralndn.com" style="color: #2563eb;">Info@auralndn.com</a></p>
       <p>Best regards,<br><strong>The Auralndn Team</strong></p>
     </div>
     <div class="footer">
-      <p>Auralndn | www.example.com</p>
-      <p>129A Weedington Rd, London NW5 4NX</p>
+      <p>Contact: Info@auralndn.com</p>
+      <p>Website: https://auralndn.com</p>
+      <p><strong>Aura Model House Ltd</strong></p>
+      <p>Company Number: 17044660</p>
+      <p>99 Wallis Road</p>
+      <p>London</p>
+      <p>E9 5LN</p>
     </div>
   </div>
 </body>
@@ -2204,8 +2210,13 @@ router.post('/:contractId/resend-delivery', auth, async (req, res) => {
       <p>Best regards,<br><strong>The Auralndn Team</strong></p>
     </div>
     <div class="footer">
-      <p><strong>Auralndn</strong></p>
-      <p>Email: hello@example.com</p>
+      <p>Contact: Info@auralndn.com</p>
+      <p>Website: https://auralndn.com</p>
+      <p><strong>Aura Model House Ltd</strong></p>
+      <p>Company Number: 17044660</p>
+      <p>99 Wallis Road</p>
+      <p>London</p>
+      <p>E9 5LN</p>
     </div>
   </div>
 </body>

@@ -17,6 +17,12 @@ import PresentationGallery from '../components/PresentationGallery';
 import GmailEmailRenderer from '../components/GmailEmailRenderer';
 import { Image, FileText, Presentation } from 'lucide-react';
 
+// Hidden for now, kept so they can be switched back on later.
+// Booking-link tools: the "No Card On File" notice and the Send Booking Link SMS/Email/Both buttons.
+const SHOW_BOOKING_LINK_TOOLS = false;
+// The "Send to Alex A.I" (ReplyDesk) button.
+const SHOW_ALEX_AI = false;
+
 const LeadDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -1930,6 +1936,33 @@ const LeadDetail = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* "Let us know how we can help you" from the landing page form */}
+                  {(() => {
+                    let helpMessage = null;
+                    try {
+                      const customFields = typeof lead.custom_fields === 'string'
+                        ? JSON.parse(lead.custom_fields)
+                        : lead.custom_fields;
+                      helpMessage = customFields && customFields.help_message;
+                    } catch (e) {
+                      helpMessage = null;
+                    }
+                    if (!helpMessage) return null;
+                    return (
+                      <div className="bg-gradient-to-r from-sky-50 to-cyan-50 rounded-xl p-4">
+                        <div className="flex items-start space-x-4">
+                          <div className="w-12 h-12 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
+                            <FiMessageSquare className="h-6 w-6 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-sky-600 uppercase tracking-wide">How can we help</p>
+                            <p className="text-sm text-gray-900 mt-1 whitespace-pre-wrap break-words">{helpMessage}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 
@@ -2871,7 +2904,7 @@ const LeadDetail = () => {
                     <p className="text-[10px] text-emerald-600">Booking secured with card hold</p>
                   </div>
                 </div>
-              ) : (
+              ) : SHOW_BOOKING_LINK_TOOLS && (
                 <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-center gap-3">
                   <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -2886,7 +2919,7 @@ const LeadDetail = () => {
               )}
 
               {/* Send Booking Link Buttons */}
-              {!editing && (lead.phone || lead.email) && (
+              {SHOW_BOOKING_LINK_TOOLS && !editing && (lead.phone || lead.email) && (
                 <div className="mt-4 space-y-2">
                   <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Send Booking Link</p>
                   <div className="flex gap-2">
@@ -2985,7 +3018,7 @@ const LeadDetail = () => {
               )}
 
               {/* Alex A.I Integration */}
-              {!editing && (
+              {SHOW_ALEX_AI && !editing && (
                 <ReplyDeskButton lead={lead} onSuccess={() => fetchLead()} />
               )}
             </div>

@@ -161,6 +161,7 @@ router.post('/submit', async (req, res) => {
       'Upload Photo', 'Photo', 'photo', 'image_url',
       'Gender', 'gender',  // Gender field
       'Lead Code', 'lead_code',  // Lead Code field
+      'Message', 'message', 'Let us know how we can help you', 'How can we help',  // Stored as custom_fields.help_message
       // Gravity Forms metadata fields
       'id', 'form_id', 'post_id', 'date_created', 'date_updated',
       'is_starred', 'is_read', 'ip', 'source_url', 'user_agent',
@@ -181,10 +182,19 @@ router.post('/submit', async (req, res) => {
     };
     const leadCode = getLeadCode();
 
+    // "Let us know how we can help you" free-text box. Not matched by field ID:
+    // '12' is already a Gender fallback above.
+    const helpMessageKeys = ['Message', 'message', 'Let us know how we can help you', 'How can we help'];
+    const helpMessageKey = helpMessageKeys.find(k => formData[k] && String(formData[k]).trim());
+    const helpMessage = helpMessageKey ? String(formData[helpMessageKey]).trim() : null;
+
     // Store any unprocessed fields in custom_fields (excluding Gender which has its own column)
     const customFields = {};
     if (leadCode) {
       customFields.lead_code = leadCode;
+    }
+    if (helpMessage) {
+      customFields.help_message = helpMessage;
     }
     Object.keys(formData).forEach(key => {
       if (!processedKeys.includes(key)) {
